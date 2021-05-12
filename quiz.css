@@ -1,0 +1,107 @@
+body {
+  background-color: #bbb;
+  font-family: Verdana;
+  font-style: 14px;
+}
+
+#container {
+  width: 400px;
+  background-color: #444;
+  color: #ddd;
+  margin: 10px auto;
+  padding: 16px;
+  border-radius: 4px;
+  position: relative;
+}
+
+#question {
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+#choicesUl {
+  margin-bottom: 16px;
+  list-style: none;
+  padding: 0;
+}
+
+#choicesUl > li {
+  border: 1px solid #888;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+#choicesUl > li:hover {
+  background-color: black;
+}
+
+#choicesUl > li.correct {
+  background-color: #353;
+  color: #ada;
+  border-color: #ada;
+  font-weight: bold;
+}
+
+#choicesUl > li.correct::after {
+  content: " ... Correct!";
+}
+
+
+#choicesUl > li.wrong {
+  background-color: #533;
+  color: #daa;
+  border-color: #daa;
+  font-weight: bold;
+}
+
+#choicesUl > li.wrong::after {
+  content: " ... Wrong!";
+}
+
+#button, #result > a {
+  background-color: #868;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 0 #424;
+}
+
+#button.disabled {
+  background-color: #666;
+  box-shadow: 0 4px 0 #333;
+  opacity: 0.7;
+}
+
+#result {
+  width: 300px;
+  padding: 30px;
+  background-color: #222;
+  color: #ddd;
+  position: absolute;
+  /* rgba = x, y, ぼかし, 色 */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  border-radius: 4px;
+  text-align: center;
+  translate: 0.4s;
+}
+
+#result.hidden {
+  transform: translateY(-500px);
+}
+
+#result > p {
+  font-size: 24px;
+}
+
+#result > a {
+  /* ボタンを横幅いっぱいに */
+  display: block;
+  text-decoration: none;
+}

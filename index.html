@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="utf-8">
+  <title>JS Practice 008 Quiz</title>
+  <link rel="stylesheet" href="quiz.css">
+</html>
+<body>
+  <section id="container">
+    <p id="question">What is A?</p>
+    <ul id="choicesUl">
+    </ul>
+    <div id="button" class="disabled">Next</div>
+
+    <section id="result" class="hidden">
+      <p></p>
+      <!-- href属性を空にしておくことでリロードとなる -->
+      <a href="">Replay?</a>
+    </section>
+  </section>
+
+  <section>
+    <h1>CSS</h1>
+    <pre>
+body {
+  background-color: #bbb;
+  font-family: Verdana;
+  font-style: 14px;
+}
+
+#container {
+  width: 400px;
+  background-color: #444;
+  color: #ddd;
+  margin: 10px auto;
+  padding: 16px;
+  border-radius: 4px;
+  position: relative;
+}
+
+#question {
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+#choicesUl {
+  margin-bottom: 16px;
+  list-style: none;
+  padding: 0;
+}
+
+#choicesUl > li {
+  border: 1px solid #888;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+#choicesUl > li:hover {
+  background-color: black;
+}
+
+#choicesUl > li.correct {
+  background-color: #353;
+  color: #ada;
+  border-color: #ada;
+  font-weight: bold;
+}
+
+#choicesUl > li.correct::after {
+  content: " ... Correct!";
+}
+
+
+#choicesUl > li.wrong {
+  background-color: #533;
+  color: #daa;
+  border-color: #daa;
+  font-weight: bold;
+}
+
+#choicesUl > li.wrong::after {
+  content: " ... Wrong!";
+}
+
+#button, #result > a {
+  background-color: #868;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 0 #424;
+}
+
+#button.disabled {
+  background-color: #666;
+  box-shadow: 0 4px 0 #333;
+  opacity: 0.7;
+}
+
+#result {
+  width: 300px;
+  padding: 30px;
+  background-color: #222;
+  color: #ddd;
+  position: absolute;
+  /* rgba = x, y, ぼかし, 色 */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  border-radius: 4px;
+  text-align: center;
+  translate: 0.4s;
+}
+
+#result.hidden {
+  transform: translateY(-500px);
+}
+
+#result > p {
+  font-size: 24px;
+}
+
+#result > a {
+  /* ボタンを横幅いっぱいに */
+  display: block;
+  text-decoration: none;
+}
+    </pre>
+
+    <h1>JS</h1>
+    <pre>
+"use strict";
+
+// フィッシャー・イェーツのシャッフル
+// 一番後ろの要素をランダムの場所へ移動し、後ろから２番めの要素をランダムの場所へ移動し……
+
+{
+  const question = document.getElementById("question");
+  const choicesUl = document.getElementById("choicesUl");
+  const button = document.getElementById("button");
+  const result = document.getElementById("result");
+  const scoreLabel = document.querySelector("#result > p");
+
+  const quizSet = shuffle([
+    {q: "What is A?", c: ["A0", "A1", "A2"]}, // 0番目が正解
+    {q: "What is B?", c: ["B0", "B1", "B2"]},
+    {q: "What is C?", c: ["C0", "C1", "C2"]},
+  ]);
+  let currentNum = 0;
+  let isAnswered;
+  let score = 0;
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }    
+    return arr;
+  }
+
+  // question.textContent = quizSet[currentNum].q;
+
+  // const shuffledChoices = shuffle([...quizSet[currentNum].c]);
+  // // console.log(quizSet[currentNum].c);
+
+  // shuffledChoices.forEach(choice => {
+  //   const li = document.createElement("li");
+  //   li.textContent = choice;
+  //   choicesUl.appendChild(li);
+  // });
+
+  function checkAnswer(li) {
+    // if (isAnswered === true) {
+    if (isAnswered) { // 省略可
+      return;
+    }
+
+    isAnswered = true;
+
+    if (li.textContent === quizSet[currentNum].c[0]) {
+      // console.log("correct!");
+      li.classList.add("correct");
+      score++;
+
+    } else {
+      // console.log("wrong");
+      li.classList.add("wrong");
+    }
+
+    button.classList.remove("disabled");
+  }
+
+  function setQuiz() {
+    isAnswered = false;
+    question.textContent = quizSet[currentNum].q;
+
+    while (choicesUl.firstChild) {
+      choicesUl.removeChild(choicesUl.firstChild);
+    }
+
+    const shuffledChoices = shuffle([...quizSet[currentNum].c]);
+    // console.log(quizSet[currentNum].c);
+  
+    shuffledChoices.forEach(choice => {
+      const li = document.createElement("li");
+      li.textContent = choice;
+      li.addEventListener("click", () => {
+        checkAnswer(li);
+      });
+      choicesUl.appendChild(li);
+    });
+
+    if (currentNum === quizSet.length - 1) {
+      button.textContent = "Show Score";
+    }
+  }
+
+  setQuiz();
+
+  button.addEventListener("click", () => {
+    if (button.classList.contains("disabled")) {
+      return;
+    }
+    button.classList.add("disabled");
+
+    if (currentNum === quizSet.length - 1 ) {
+      // console.log(`${score} / ${quizSet.length}`);
+      scoreLabel.textContent = `Score: ${score} / ${quizSet.length}`;
+      result.classList.remove("hidden");
+    } else {
+      currentNum++;
+      setQuiz();
+    }
+  });
+}
+    </pre>
+  </section>
+  <script src="quiz.js"></script>
+</body>
